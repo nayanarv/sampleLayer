@@ -9,12 +9,35 @@
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate   {
 
     var window: UIWindow?
+   // var layerClient : LYRClient!
+    var controller: ViewController!
 
+    let appID = NSURL(string: "layer:///apps/staging/399fab32-7646-11e5-a321-70c100000104")
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        //layerClient = LYRClient(appID: appID)
+       // layerClient.connectWithCompletion { (success, lerror) -> Void in
+//            if success
+//            {
+//                print("connected")
+//                #if TARGET_IPHONE_SIMULATOR
+//                    let userIDString = "Simulator"
+//                #else
+//                    let userIDString = "Simulator"
+//                #endif
+//               self.authenticateLayerWithUserID(userIDString, completion: { (success, error) -> Void in
+//                if (!success)
+//                {
+//                    
+//                }
+//               })
+//            }
+//        }
+     //   controller = ViewController()
+    //    controller.layerClient = layerClient
         // Override point for customization after application launch.
         return true
     }
@@ -40,7 +63,131 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    /*
+    0x000000010de08280 sampleLayer`partial apply forwarder for reabstraction thunk helper from @callee_owned (@unowned Swift.Bool, @owned Swift.ImplicitlyUnwrappedOptional<ObjectiveC.NSError>) -> (@unowned ()) to @callee_owned (@in (success : Swift.Bool, error : Swift.ImplicitlyUnwrappedOptional<ObjectiveC.NSError>)) -> (@out ()) with unmangled suffix "73" at AppDelegate.swift
+*/
+    //MARK: - LAYER
 
+//    func authenticateLayerWithUserID(userID: NSString, completion: ((success: Bool , error: NSError!) -> Void)!) {
+//        // Check to see if the layerClient is already authenticated.
+//        if self.layerClient.authenticatedUserID != nil {
+//            // If the layerClient is authenticated with the requested userID, complete the authentication process.
+//            print(userID)
+//            if self.layerClient.authenticatedUserID == userID {
+//                print("Layer Authenticated as User \(self.layerClient.authenticatedUserID)")
+//                if completion != nil {
+//                    completion(success: true, error: nil)
+//                }
+//                return
+//            } else {
+//                //If the authenticated userID is different, then deauthenticate the current client and re-authenticate with the new userID.
+//                self.layerClient.deauthenticateWithCompletion { (success: Bool, error: NSError!) in
+//                    if error != nil {
+//                        print(error.description)
+//                        self.authenticationTokenWithUserId(userID, completion: { (success: Bool, error: NSError?) in
+//                            if (completion != nil) {
+//                                completion(success: success, error: error)
+//                            }
+//                        })
+//                    } else {
+//                        if completion != nil {
+//                            completion(success: true, error: error)
+//                            print(error)
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            // If the layerClient isn't already authenticated, then authenticate.
+//            self.authenticationTokenWithUserId(userID, completion: { (success: Bool, error: NSError!) in
+//                if completion != nil {
+//                    completion(success: success, error: error)
+//                }
+//            })
+//        }
+//    }
+//    
+//    func authenticationTokenWithUserId(userID: NSString, completion:((success: Bool, error: NSError!) -> Void)!) {
+//        /*
+//        * 1. Request an authentication Nonce from Layer
+//        */
+//        self.layerClient.requestAuthenticationNonceWithCompletion { (nonce: String!, error: NSError!) in
+//            if (nonce.isEmpty) {
+//                if (completion != nil) {
+//                    completion(success: false, error: error)
+//                }
+//                return
+//            }
+//            /*
+//            * 2. Acquire identity Token from Layer Identity Service
+//            */
+//            self.requestIdentityTokenForUserID(userID, appctnId: String(self.layerClient.appID), nonce: nonce, completion: { (identityToken, error) -> Void in
+//                if(identityToken != "")
+//                {
+//                    if (completion != nil)
+//                    {
+//                        completion(success: false, error: error)
+//                    }
+//                    return
+//                }
+//                /*
+//                * 3. Submit identity token to Layer for validation
+//                */
+//                self.layerClient.authenticateWithIdentityToken(identityToken as String, completion: { (authenticatedUserID, error) -> Void in
+//                    if((authenticatedUserID) != nil)
+//                    {
+//                        if((completion) != nil)
+//                        {
+//                            completion(success: true, error: nil)
+//                        }
+//                        print("authenticatd user id", identityToken)
+//                    }
+//                    else
+//                    {
+//                        completion(success: false, error: error)
+//                        
+//                    }
+//                })
+//            })
+//        }
+//    }
+//
+//
+//
+//    
+//    func requestIdentityTokenForUserID(userID: NSString, appctnId: NSString, nonce: NSString, completion:((identityToken: NSString, error: NSError!) -> Void)!) {
+//        
+//        let identityTokenURL = NSURL(string: "https://layer-identity-provider.herokuapp.com/identity_tokens")
+//        let request = NSMutableURLRequest(URL: identityTokenURL!)
+//        request.HTTPMethod = "POST"
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.setValue("application/json", forHTTPHeaderField: "Accept")
+//        let parameters: NSDictionary = ["app_id" :appctnId, "user_id" : userID, "nonce" : nonce]
+//        let requestBody = try!  NSJSONSerialization.dataWithJSONObject(parameters, options: [])
+//        request.HTTPBody = requestBody
+//        let sessionConfiguration = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+//        let session = NSURLSession(configuration: sessionConfiguration)
+//        session.dataTaskWithRequest(request) { (data, response, error) -> Void in
+//            if (error != nil)
+//            {
+//                
+//                completion(identityToken: "", error: error)
+//            }
+//            let responseObject: NSDictionary = try! NSJSONSerialization.JSONObjectWithData(data!, options: []) as! NSDictionary
+//            if((responseObject .valueForKey("error")) != nil)
+//            {
+//                let identityTokn: NSString = responseObject .valueForKey("identity_token") as! NSString
+//                completion(identityToken: identityTokn, error: nil)
+//            }
+//            else
+//            {
+//                
+//            }
+//        
+//        }
+//        
+//    }
+//
 
 }
-
